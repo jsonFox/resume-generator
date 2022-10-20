@@ -1,0 +1,54 @@
+{
+  "heading": {
+    "name": "",
+    "phone": "",
+    "email": "",
+    "linkedin": "",
+    "github": "",
+    "portfolio": ""
+  },
+  "education": [
+    {
+      "university": "",
+      "degree": "",
+      "location": "",
+      "date": ""
+    }
+  ],
+  "projects": [
+    {
+      "name": "",
+      "stack": [
+        ""
+      ],
+      "links": [
+        {
+          "label": "",
+          "url": ""
+        }
+      ],
+      "details": [
+        ""
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "label": "",
+      "list": [
+        ""
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "position": "",
+      "date": "",
+      "company": "",
+      "location": "",
+      "details": [
+        ""
+      ]
+    }
+  ]
+}
