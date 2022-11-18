@@ -4,6 +4,6 @@ const build = require('./lib/builder')
 console.time()
 
 console.info('Importing resume from JSON')
-const resume = fs.readFileSync('resume.json')
+const resume = fs.readFileSync('data/resume.json')
 
 build(JSON.parse(resume))
