@@ -1,9 +1,9 @@
-const fs = require('fs')
-const build = require('./lib/builder')
+const fs = require('fs');
+const build = require('./lib/builder');
 
-console.time()
+console.time();
 
-console.info('Importing resume from JSON')
-const resume = fs.readFileSync('data/resume.json')
+console.info('Importing resume from JSON');
+const resume = fs.readFileSync('resume/resume.json');
 
-build(JSON.parse(resume))
+build(JSON.parse(resume));
