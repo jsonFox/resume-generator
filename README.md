@@ -20,7 +20,7 @@ npm install
 
 1. Remove the `.EXAMPLE` extension from `resume.json.EXAMPLE` in the `/resume` folder
 2. Modify `resume.json` with your information
-3. Run the build command, your LaTeX and PDF files will be output in the `/dist` folder
+3. Run the generate command, your LaTeX and PDF files will be output in the `/dist` folder
 
 ```
 npm run build
