@@ -23,5 +23,5 @@ npm install
 3. Run the generate command, your LaTeX and PDF files will be output in the `/dist` folder
 
 ```
-npm run build
+npm run generate
 ```
