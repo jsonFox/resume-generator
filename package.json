@@ -4,7 +4,7 @@
   "description": "LaTeX formatted resume generator from json",
   "main": "index.js",
   "scripts": {
-    "build": "node index.js",
+    "generate": "node index.js",
     "format": "prettier --write ."
   },
   "keywords": [],
