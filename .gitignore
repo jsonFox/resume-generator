@@ -1,3 +1,9 @@
+# Node modules
 node_modules
+
+# Output folder
 dist
+
+# Personal data
 resume/*.json
+resume/resume.ts
