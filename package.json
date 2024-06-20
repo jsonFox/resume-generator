@@ -2,7 +2,7 @@
   "name": "latex-resume-generator",
   "version": "1.0.0",
   "description": "LaTeX formatted resume generator from json",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "generate": "tsx index.ts",
     "format": "prettier --write ."

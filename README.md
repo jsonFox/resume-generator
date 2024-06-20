@@ -1,6 +1,8 @@
 # LaTeX Resume Generator
 
-Generate a a LaTeX-based PDF resume from a pre-formatted JSON structure.
+Generate a a LaTeX-based PDF resume using TypeScript object templates.
+
+See the [example folder](example/) for an example of input/output files
 
 ## Installation
 
@@ -18,8 +20,9 @@ npm install
 
 ## Usage
 
-1. Remove the `.EXAMPLE` extension from `resume.json.EXAMPLE` in the `/resume` folder
-2. Modify `resume.json` with your information
+1. Make a copy of `resume.template.ts` in the `/resume` folder
+2. Rename the copy to `resume.ts`
+2. Modify `resume.ts` with your information
 3. Run the generate command, your LaTeX and PDF files will be output in the `/dist` folder
 
 ```

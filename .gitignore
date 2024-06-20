@@ -4,6 +4,6 @@ node_modules
 # Output folder
 dist
 
-# Personal data
-resume/*.json
+# User data
+*/*.json
 resume/resume.ts
