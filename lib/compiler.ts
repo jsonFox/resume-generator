@@ -1,25 +1,38 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import {
+  writeFileSync,
+  unlinkSync,
+  existsSync,
+  mkdirSync,
+  createWriteStream
+} from 'fs';
+import { join as joinPath, resolve as resolvePath } from 'path';
 import latex from 'node-latex';
 import { builderConfig } from './config';
 import LatexBuilder from './latex-builder';
 import ResumeBuilder from './resume-builder';
+import { logger } from './logger';
 
 export const generate = (resume: ResumeBuilder) => {
-  if (!(resume instanceof ResumeBuilder)) {
-    console.error('Invalid resume object');
-    process.exit(1);
-  }
-  if (!resume.name) {
-    console.error('Name is required in the resume object');
+  // Perform validations before proceeding
+  try {
+    if (!(resume instanceof ResumeBuilder)) {
+      throw new Error('Invalid resume object');
+    }
+    if (!resume.name) {
+      throw new Error('Name is required in the resume object');
+    }
+  } catch (err) {
+    logger.error((err as Error).message);
     process.exit(1);
   }
 
-  console.time('Build time');
+  const buildStart = Date.now();
 
+  // If a custom filename is not provided, generate one based on the name from the resume
   let filename = resume.filename;
   if (!filename) {
     const name = resume.name.split(' ');
+    // Format name based on splitNameAt from config
     const formattedName =
       builderConfig.splitNameAt === 'first'
         ? `${name.slice(1, name.length).join(' ')}, ${name[0]}`
@@ -27,33 +40,36 @@ export const generate = (resume: ResumeBuilder) => {
     filename = `${formattedName} - Resume - ${new Date().getFullYear()}`;
   }
 
-  const outputDir = path.resolve(__dirname, '../dist');
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+  // Create dist/ if it doesn't exist, otherwise node fs will throw an error
+  const outputDir = resolvePath(__dirname, '../dist');
+  if (!existsSync(outputDir)) mkdirSync(outputDir);
 
-  console.info('Generating TeX file');
+  logger.info('Generating TeX file');
   // Get LaTeX document as string
   const latexDoc = new LatexBuilder(resume).document;
   // Write LaTeX document to file
-  fs.writeFileSync(path.join(outputDir, filename + '.tex'), latexDoc);
+  writeFileSync(joinPath(outputDir, filename + '.tex'), latexDoc);
 
-  console.info('Compiling to PDF');
-  const output = fs.createWriteStream(path.join(outputDir, filename + '.pdf'));
+  logger.info('Compiling to PDF');
+  const output = createWriteStream(joinPath(outputDir, filename + '.pdf'));
   // Compile LaTeX document to PDF
   const pdf = latex(latexDoc);
 
   // Handle errors during compilation
   pdf.on('error', (err) => {
-    console.error(err);
-    if (fs.existsSync(path.join(outputDir, filename + '.pdf'))) {
-      fs.unlinkSync(path.join(outputDir, filename + '.pdf'));
+    logger.error(err);
+    if (existsSync(joinPath(outputDir, filename + '.pdf'))) {
+      unlinkSync(joinPath(outputDir, filename + '.pdf'));
     }
     process.exit(1);
   });
 
   // Handle successful compilation
   pdf.on('finish', () => {
-    console.timeEnd('Build time');
-    console.info('Resume generated successfully, see dist/ for output');
+    const buildEnd = Date.now();
+    const buildTime = (buildEnd - buildStart) / 1000;
+    logger.info(`Build time: ${buildTime}s`);
+    logger.log('done', 'Resume generated successfully, see dist/ for output');
   });
 
   pdf.pipe(output);

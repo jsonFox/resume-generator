@@ -1,8 +1,12 @@
 # Node modules
 node_modules
 
-# Output folder
+# Output files
 dist
+logs
+
+# Generated config
+config.json
 
 # User data
 */*.json

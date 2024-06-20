@@ -4,6 +4,7 @@
   "description": "LaTeX formatted resume generator from json",
   "main": "index.ts",
   "scripts": {
+    "init": "tsx lib/init",
     "generate": "tsx index.ts",
     "format": "prettier --write ."
   },
@@ -11,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-latex": "^3.1.0"
+    "node-latex": "^3.1.0",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "prettier": "^2.7.1",
