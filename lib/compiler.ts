@@ -7,26 +7,22 @@ import {
 } from 'fs';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import latex from 'node-latex';
-import { builderConfig } from './config';
 import LatexBuilder from './latex-builder';
 import ResumeBuilder from './resume-builder';
 import { logger } from './logger';
+import { ResumeGeneratorConfig } from './init';
 
-export const generate = (resume: ResumeBuilder) => {
-  // Perform validations before proceeding
-  try {
-    if (!(resume instanceof ResumeBuilder)) {
-      throw new Error('Invalid resume object');
-    }
-    if (!resume.name) {
-      throw new Error('Name is required in the resume object');
-    }
-  } catch (err) {
-    logger.error((err as Error).message);
-    process.exit(1);
-  }
-
+export const generate = (
+  config: ResumeGeneratorConfig,
+  resume: ResumeBuilder
+) => {
   const buildStart = Date.now();
+  logger.info(
+    'Starting build at ' +
+      new Date(buildStart).toLocaleDateString() +
+      ' ' +
+      new Date(buildStart).toLocaleTimeString()
+  );
 
   // If a custom filename is not provided, generate one based on the name from the resume
   let filename = resume.filename;
@@ -34,7 +30,7 @@ export const generate = (resume: ResumeBuilder) => {
     const name = resume.name.split(' ');
     // Format name based on splitNameAt from config
     const formattedName =
-      builderConfig.splitNameAt === 'first'
+      config.splitNameAt === 'first'
         ? `${name.slice(1, name.length).join(' ')}, ${name[0]}`
         : `${name.at(-1)}, ${name.slice(0, -2).join(' ')}`;
     filename = `${formattedName} - Resume - ${new Date().getFullYear()}`;
@@ -69,7 +65,8 @@ export const generate = (resume: ResumeBuilder) => {
     const buildEnd = Date.now();
     const buildTime = (buildEnd - buildStart) / 1000;
     logger.info(`Build time: ${buildTime}s`);
-    logger.log('done', 'Resume generated successfully, see dist/ for output');
+    logger.info(`Output: dist/${filename.replaceAll(/\s/g, '\u00A0')}.pdf`);
+    logger.log('done', `Resume generated successfully`);
   });
 
   pdf.pipe(output);
