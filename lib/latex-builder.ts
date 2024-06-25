@@ -51,7 +51,12 @@ export default class LatexBuilder {
 
   static descriptionList(list: string[], joiner = '\n') {
     return list
-      .map((text) => `\\resumeItem{${this.formatReservedCharacters(text)}}`)
+      .map(
+        (text) =>
+          `\\resumeItem{${this.formatReservedCharacters(
+            `${text}${text.endsWith('.') ? '' : '.'}`
+          )}}`
+      )
       .join(joiner);
   }
 
@@ -70,13 +75,16 @@ export default class LatexBuilder {
     const rows = [];
     for (let i = 0; i < items.length; i += 3) {
       const chunk = items.slice(i, i + 3);
-      const row = chunk.map((item) => this.headerItem(item)).join(' ~ \n');
+      const row = chunk
+        .map((item) => this.headerItem(item))
+        // Add a | separator between items
+        .join(' ~ $|$ ~ \n');
       rows.push(row);
     }
     return `%----------HEADER----------
 \\begin{center}
-  \\textbf{\\Huge \\scshape ${name}} \\\\ \\vspace{1pt}
-  ${rows.join(' \\\\ \n')}
+  \\textbf{\\Huge \\scshape ${name}} \\\\ \\vspace{8pt}
+  ${rows.join(' \\\\ \n\\vspace{2pt}')}
 \\end{center}`;
   }
 
