@@ -1,7 +1,10 @@
 import ResumeBuilder from '../lib/resume-builder';
 
 const resume = new ResumeBuilder()
-  // Font definitions can be imported from SERIF and SANS_SERIF objects in  '../lib/fonts'
+  /**
+   * Font definitions can be imported from SERIF and SANS_SERIF objects in  '../lib/fonts'
+   * Leave empty to use default font
+   */
   .setFont()
   .addPersonalInfo({
     name: '',

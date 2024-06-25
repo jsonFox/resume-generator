@@ -14,6 +14,15 @@ export default class LatexBuilder {
     this.resume = resume;
   }
 
+  static formatMarkdownSyntax(text: string) {
+    if (!text) return;
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '\\textbf{$1}')
+      .replace(/\*(.*?)\*/g, '\\emph{$1}')
+      .replace(/`(.*?)`/g, '\\texttt{$1}')
+      .replace(/__(.*?)__/g, '\\underline{$1}');
+  }
+
   static formatReservedCharacters(text: string) {
     if (!text) return;
     return text
@@ -51,14 +60,14 @@ export default class LatexBuilder {
   }
 
   static descriptionList(list: string[], joiner = '\n') {
-    return list
-      .map(
-        (text) =>
-          `\\resumeItem{${this.formatReservedCharacters(
-            `${text}${text.endsWith('.') ? '' : '.'}`
-          )}}`
-      )
-      .join(joiner);
+    const formatDescriptionItem = (text: string) => {
+      if (!text) return;
+      if (!text.endsWith('.')) text += '.';
+      text = this.formatReservedCharacters(text);
+      text = this.formatMarkdownSyntax(text);
+      return `\\resumeItem{${text}}`;
+    };
+    return list.map(formatDescriptionItem).join(joiner);
   }
 
   static organizationName(name: string, url?: string) {
