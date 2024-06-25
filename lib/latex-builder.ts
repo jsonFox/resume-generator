@@ -127,7 +127,7 @@ export default class LatexBuilder {
           (s) =>
             `\\textbf{${s.category}}{: ${s.skills
               .map(this.formatReservedCharacters)
-              .join(', ')}}`
+              .join(' $|$ ')}}`
         )
         .join(' \\\\ \n\t\t\t')}
     }}
@@ -205,9 +205,7 @@ export default class LatexBuilder {
       {\\textbf{${p.title}} ~ \\emph{${p.stack.join(', ')}}}{${p.links
           .map(LatexBuilder.projectLink)
           .join(' ~ ')}}
-    \\resumeItemListStart
-      ${LatexBuilder.descriptionList(p.description, '\n\t\t\t')}
-    \\resumeItemListEnd`
+    ${p.description}\\vspace{-4pt}`
       )
       .join('\n')}
   \\resumeSubHeadingListEnd`;
@@ -303,8 +301,8 @@ ${
 \\newcommand{\\resumeProjectHeading}[2]{
   \\item
   \\begin{tabular*}{0.97\\textwidth}{l@{\\extracolsep{\\fill}}r}
-    \\small#1 & #2 \\\\
-  \\end{tabular*}\\vspace{-7pt}
+    #1 & #2 \\\\
+  \\end{tabular*}\\vspace{-1pt}
 }
 
 \\newcommand{\\resumeSubItem}[1]{\\resumeItem{#1}\\vspace{-4pt}}

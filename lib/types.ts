@@ -3,7 +3,7 @@ export type IResumeProjectItem = {
   title: string;
   stack: string[];
   links: string[];
-  description: string[];
+  description: string;
 };
 
 /** Skills section */

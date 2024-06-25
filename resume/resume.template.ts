@@ -45,7 +45,7 @@ const resume = new ResumeBuilder()
       title: '',
       stack: [],
       links: [],
-      description: []
+      description: ''
     }
   ]);
 

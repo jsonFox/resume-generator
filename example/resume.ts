@@ -63,19 +63,15 @@ const resume = new ResumeBuilder()
       title: 'Portfolio Website',
       stack: ['React', 'Node.js', 'Express', 'MongoDB'],
       links: [],
-      description: [
-        'Developed a personal portfolio website to showcase projects and skills',
-        'Implemented contact form using Nodemailer to send emails to my inbox'
-      ]
+      description:
+        'Developed a personal portfolio website to showcase projects and skills'
     },
     {
       title: 'Task Manager App',
       stack: ['React', 'Node.js', 'Express', 'MongoDB'],
       links: [],
-      description: [
-        'Built a task manager application to keep track of daily tasks and goals',
-        'Utilized JWT for user authentication and authorization'
-      ]
+      description:
+        'Built a task manager application to keep track of daily tasks and goals'
     }
   ]);
 
