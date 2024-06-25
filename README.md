@@ -41,3 +41,4 @@ npm run generate
 
 - More configuration options including layout
 - GUI for config editing
+- Support for file versioning
