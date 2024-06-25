@@ -1,3 +1,4 @@
+import { FontDefinition } from './fonts';
 import ResumeBuilder from './resume-builder';
 import {
   IResumeEducationItem,
@@ -209,7 +210,7 @@ export default class LatexBuilder {
   }
 
   /** Used at the start of the latex document */
-  static begin() {
+  static begin(font?: FontDefinition) {
     return `%-------------------------
 % Template based off of: https://github.com/sb2nov/resume
 %------------------------
@@ -230,16 +231,14 @@ export default class LatexBuilder {
 \\input{glyphtounicode}
 
 
-%----------FONT OPTIONS----------
-% sans-serif
-% \\usepackage[sfdefault]{FiraSans}
-% \\usepackage[sfdefault]{roboto}
-% \\usepackage[sfdefault]{noto-sans}
-% \\usepackage[default]{sourcesanspro}
-
-% serif
-% \\usepackage{CormorantGaramond}
-% \\usepackage{charter}
+%----------FONT----------
+${
+  font
+    ? `\\usepackage${font.familyDefault ? `[${font.familyDefault}]` : ''}{${
+        font.package
+      }}`
+    : ''
+}
 
 
 \\pagestyle{fancy}
@@ -316,7 +315,7 @@ export default class LatexBuilder {
   }
 
   get begin() {
-    return LatexBuilder.begin();
+    return LatexBuilder.begin(this.resume.font);
   }
 
   /** Used at the end of the latex document */

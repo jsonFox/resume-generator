@@ -1,3 +1,4 @@
+import { FontDefinition } from './fonts';
 import {
   IResumeHeaderInfo,
   IResumeBuilder,
@@ -31,9 +32,16 @@ export default class ResumeBuilder implements IResumeBuilder {
   ];
   // (Optional) name of output files
   filename?: string;
+  // Formatting options
+  font?: FontDefinition;
 
   constructor(filename?: string) {
     this.filename = filename;
+  }
+
+  setFont(font?: FontDefinition) {
+    this.font = font;
+    return this;
   }
 
   addPersonalInfo(info: IResumeHeaderInfo) {
@@ -89,9 +97,5 @@ export default class ResumeBuilder implements IResumeBuilder {
     }
     this.sectionOrder = order;
     return this;
-  }
-
-  build() {
-
   }
 }

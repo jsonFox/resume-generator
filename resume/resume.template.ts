@@ -1,6 +1,8 @@
 import ResumeBuilder from '../lib/resume-builder';
 
 const resume = new ResumeBuilder()
+  // Font definitions can be imported from SERIF and SANS_SERIF objects in  '../lib/fonts'
+  .setFont()
   .addPersonalInfo({
     name: '',
     address: '',
@@ -24,7 +26,7 @@ const resume = new ResumeBuilder()
       startDate: '',
       endDate: '',
       description: []
-    },
+    }
   ])
   .addEducation([
     {
@@ -41,7 +43,7 @@ const resume = new ResumeBuilder()
       stack: [],
       links: [],
       description: []
-    },
+    }
   ]);
 
 export default resume;
