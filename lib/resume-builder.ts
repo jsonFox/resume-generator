@@ -1,3 +1,4 @@
+import { ColorDefinition } from './colors';
 import { FontDefinition } from './fonts';
 import {
   IResumeHeaderInfo,
@@ -6,7 +7,8 @@ import {
   IResumeProjectItem,
   IResumeSkillsItem,
   IResumeEducationItem,
-  ISectionOrder
+  ISectionOrder,
+  FormatOptions
 } from './types';
 
 export default class ResumeBuilder implements IResumeBuilder {
@@ -33,20 +35,28 @@ export default class ResumeBuilder implements IResumeBuilder {
   // (Optional) name of output files
   filename?: string;
   // Formatting options
-  font?: FontDefinition;
-  color?: string;
+  options: FormatOptions = {
+    font: undefined,
+    textColor: 'Black',
+    dividerColor: 'Black'
+  };
 
   constructor(filename?: string) {
     this.filename = filename;
   }
 
   setFont(font?: FontDefinition) {
-    this.font = font;
+    this.options.font = font;
     return this;
   }
 
-  setColor(color?: string) {
-    this.color = color;
+  setTextColor(color?: ColorDefinition) {
+    this.options.textColor = color ?? 'Black';
+    return this;
+  }
+
+  setDividerColor(color?: ColorDefinition) {
+    this.options.dividerColor = color ?? 'Black';
     return this;
   }
 

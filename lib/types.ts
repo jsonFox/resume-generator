@@ -1,3 +1,13 @@
+import { ColorDefinition } from './colors';
+import { FontDefinition } from './fonts';
+
+/** LaTeX formatting options */
+export type FormatOptions = {
+  font?: FontDefinition;
+  textColor: ColorDefinition;
+  dividerColor: ColorDefinition;
+};
+
 /** Projects section */
 export type IResumeProjectItem = {
   title: string;

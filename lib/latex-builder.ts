@@ -1,6 +1,8 @@
+import { ColorDefinition } from './colors';
 import { FontDefinition } from './fonts';
 import ResumeBuilder from './resume-builder';
 import {
+  FormatOptions,
   IResumeEducationItem,
   IResumeExperienceItem,
   IResumeProjectItem,
@@ -217,7 +219,7 @@ export default class LatexBuilder {
   }
 
   /** Used at the start of the latex document */
-  static begin(font?: FontDefinition, color = 'black') {
+  static begin({ font, textColor, dividerColor }: FormatOptions) {
     return `%-------------------------
 % Template based off of: https://github.com/sb2nov/resume
 %------------------------
@@ -237,7 +239,7 @@ export default class LatexBuilder {
 \\usepackage{hyperref}
 \\hypersetup{
     colorlinks = true,
-    urlcolor = ${color},
+    urlcolor = ${textColor},
 }
 \\input{glyphtounicode}
 
@@ -273,9 +275,9 @@ ${
 
 % Sections formatting
 \\titleformat{\\section}{
-  \\vspace{-4pt}\\scshape\\raggedright\\color{${color}}\\large
+  \\vspace{-4pt}\\scshape\\raggedright\\color{${textColor}}\\large
 }{}{0em}{}
-  [\\color{black}\\titlerule \\vspace{-5pt}]
+  [\\color{${dividerColor}}\\titlerule \\vspace{-5pt}]
 \\titlespacing{\\subsection}{0pt}{3pt}{3pt}
 
 % Ensure that generate pdf is machine readable/ATS parsable
@@ -292,8 +294,8 @@ ${
 \\newcommand{\\resumeSubheading}[4]{
   \\vspace{0pt}\\item
     \\begin{tabular*}{0.97\\textwidth}[t]{l@{\\extracolsep{\\fill}}r}
-      \\textbf{#1} & #2 \\\\
-      \\small#3 & \\small #4
+      \\textbf{#1} & #2 \\vspace{-2pt} \\\\
+      \\small\\textit{#3} & \\small{#4}
     \\end{tabular*}\\vspace{-7pt}
 }
 
@@ -328,7 +330,7 @@ ${
   }
 
   get begin() {
-    return LatexBuilder.begin(this.resume.font, this.resume.color);
+    return LatexBuilder.begin(this.resume.options);
   }
 
   /** Used at the end of the latex document */

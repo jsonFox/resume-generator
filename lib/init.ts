@@ -15,7 +15,7 @@ export type ResumeGeneratorConfig = {
 };
 
 const defaultConfig: ResumeGeneratorConfig = {
-  logging: true,
+  logging: false,
   splitNameAt: 'first'
 };
 
