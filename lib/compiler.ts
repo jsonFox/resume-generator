@@ -25,16 +25,19 @@ export const generate = (
   );
 
   // If a custom filename is not provided, generate one based on the name from the resume
-  let filename = resume.filename;
-  if (!filename) {
-    const name = resume.name.split(' ');
-    // Format name based on splitNameAt from config
-    const formattedName =
-      config.splitNameAt === 'first'
-        ? `${name.slice(1, name.length).join(' ')}, ${name[0]}`
-        : `${name.at(-1)}, ${name.slice(0, -2).join(' ')}`;
-    filename = `${formattedName} - Resume - ${new Date().getFullYear()}`;
-  }
+  /** @deprecated */
+  // let filename = resume.filename;
+  // if (!filename) {
+  //   const name = resume.name.split(' ');
+  //   // Format name based on splitNameAt from config
+  //   const formattedName =
+  //     config.splitNameAt === 'first'
+  //       ? `${name.slice(1, name.length).join(' ')}, ${name[0]}`
+  //       : `${name.at(-1)}, ${name.slice(0, -2).join(' ')}`;
+  //   filename = `${formattedName} - Resume - ${new Date().getFullYear()}`;
+  // }
+  const filename =
+    resume.filename ?? `${resume.name} Resume ${new Date().getFullYear()}`;
 
   // Create dist/ if it doesn't exist, otherwise node fs will throw an error
   const outputDir = resolvePath(__dirname, '../dist');

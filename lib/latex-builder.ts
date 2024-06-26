@@ -64,7 +64,7 @@ export default class LatexBuilder {
   static descriptionList(list: string[], joiner = '\n') {
     const formatDescriptionItem = (text: string) => {
       if (!text) return;
-      if (!text.endsWith('.')) text += '.';
+      if (text.endsWith('.')) text = text.slice(0, -1);
       text = this.formatReservedCharacters(text);
       text = this.formatMarkdownSyntax(text);
       return `\\resumeItem{${text}}`;
