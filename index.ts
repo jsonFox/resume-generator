@@ -1,7 +1,6 @@
 import winston = require('winston');
 import { generate } from './lib/compiler';
 import { logger } from './lib/logger';
-import resume from './resume/resume';
 import ResumeBuilder from './lib/resume-builder';
 import { existsSync } from 'fs';
 import { ResumeGeneratorConfig } from './lib/init';
@@ -29,10 +28,17 @@ async function main() {
       );
     }
 
-    if (!(resume instanceof ResumeBuilder)) {
-      throw new Error('Invalid resume object');
+    if (!config.pathToResume) {
+      throw new Error('Path to resume is required in the config file');
     }
 
+    const resumeImport = await import(config.pathToResume);
+    if (!(resumeImport.default instanceof ResumeBuilder)) {
+      throw new Error('Resume file not found');
+    }
+
+    const resume = resumeImport.default;
+    
     if (!resume.name) {
       throw new Error('Name is required in the resume object');
     }

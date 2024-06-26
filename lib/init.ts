@@ -2,6 +2,9 @@ import { writeFileSync as writeFile } from 'fs';
 import { logger } from './logger';
 
 export type ResumeGeneratorConfig = {
+  /** Import path for resume */
+  pathToResume: string;
+
   /** Enable/disable log file output */
   logging: boolean;
 
@@ -15,6 +18,7 @@ export type ResumeGeneratorConfig = {
 };
 
 const defaultConfig: ResumeGeneratorConfig = {
+  pathToResume: './resume/resume',
   logging: false,
   splitNameAt: 'first'
 };
