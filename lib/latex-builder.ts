@@ -38,7 +38,7 @@ export default class LatexBuilder {
   static headerItem(item: string) {
     item = this.formatReservedCharacters(item);
     if (!/\./.test(item)) return `\\small ${item}`;
-    if (/@/.test(item)) return `\\href{mailto:${item}}{${item}}`;
+    if (/@/.test(item)) return `\\href{mailto:${item}}{\\color{black}${item}}`;
     return `\\href{${item}}{\\underline{${
       /linkedin/i.test(item)
         ? 'LinkedIn'
@@ -217,7 +217,7 @@ export default class LatexBuilder {
   }
 
   /** Used at the start of the latex document */
-  static begin(font?: FontDefinition) {
+  static begin(font?: FontDefinition, color = 'black') {
     return `%-------------------------
 % Template based off of: https://github.com/sb2nov/resume
 %------------------------
@@ -231,10 +231,14 @@ export default class LatexBuilder {
 \\usepackage[usenames,dvipsnames]{color}
 \\usepackage{verbatim}
 \\usepackage{enumitem}
-\\usepackage[hidelinks]{hyperref}
 \\usepackage{fancyhdr}
 \\usepackage[english]{babel}
 \\usepackage{tabularx}
+\\usepackage{hyperref}
+\\hypersetup{
+    colorlinks = true,
+    urlcolor = ${color},
+}
 \\input{glyphtounicode}
 
 
@@ -269,8 +273,10 @@ ${
 
 % Sections formatting
 \\titleformat{\\section}{
-  \\vspace{-4pt}\\scshape\\raggedright\\large
-}{}{0em}{}[\\color{black}\\titlerule \\vspace{-5pt}]
+  \\vspace{-4pt}\\scshape\\raggedright\\color{${color}}\\large
+}{}{0em}{}
+  [\\color{black}\\titlerule \\vspace{-5pt}]
+\\titlespacing{\\subsection}{0pt}{3pt}{3pt}
 
 % Ensure that generate pdf is machine readable/ATS parsable
 \\pdfgentounicode=1
@@ -284,7 +290,7 @@ ${
 }
 
 \\newcommand{\\resumeSubheading}[4]{
-  \\vspace{-2pt}\\item
+  \\vspace{0pt}\\item
     \\begin{tabular*}{0.97\\textwidth}[t]{l@{\\extracolsep{\\fill}}r}
       \\textbf{#1} & #2 \\\\
       \\small#3 & \\small #4
@@ -322,7 +328,7 @@ ${
   }
 
   get begin() {
-    return LatexBuilder.begin(this.resume.font);
+    return LatexBuilder.begin(this.resume.font, this.resume.color);
   }
 
   /** Used at the end of the latex document */

@@ -34,6 +34,7 @@ export default class ResumeBuilder implements IResumeBuilder {
   filename?: string;
   // Formatting options
   font?: FontDefinition;
+  color?: string;
 
   constructor(filename?: string) {
     this.filename = filename;
@@ -41,6 +42,11 @@ export default class ResumeBuilder implements IResumeBuilder {
 
   setFont(font?: FontDefinition) {
     this.font = font;
+    return this;
+  }
+
+  setColor(color?: string) {
+    this.color = color;
     return this;
   }
 

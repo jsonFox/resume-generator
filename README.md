@@ -9,6 +9,7 @@ This template is for my own resume and is subject to change.
 ### NEW
 
 - Added option to set font from font library (see available fonts [here](/lib/fonts.ts))
+- Added option to set color of links and section headers
 - Added markdown support for description bullet point text (bold, underline, italics, and code currently supported)
 
 ## Installation

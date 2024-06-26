@@ -6,6 +6,12 @@ const resume = new ResumeBuilder()
    * Leave empty to use default font
    */
   .setFont()
+  /**
+   * See here for list of valid colors:
+   * https://sharelatex-wiki-cdn-671420.c.cdn77.org/learn-scripts/images/e/ef/OLxcolorList2.png
+   * Leave empty for black
+   */
+  .setColor()
   .addPersonalInfo({
     name: '',
     address: '',
