@@ -26,16 +26,19 @@ export const generate = (
 
   const filename =
     resume.filename ?? `${resume.name} Resume ${new Date().getFullYear()}`;
-
+  
   // Create dist/ if it doesn't exist, otherwise node fs will throw an error
   const outputDir = resolvePath(__dirname, '../dist');
   if (!existsSync(outputDir)) mkdirSync(outputDir);
 
   logger.info('Generating TeX file');
-  // Get LaTeX document as string
-  const latexDoc = new LatexBuilder(resume).document;
+  // Generate LaTeX document
+  const builder = new LatexBuilder(resume);
+  const latexDoc = builder.document;
+  // After generating the LaTeX document, check for warnings
+  builder.warnings.forEach((warning) => logger.log('warn', warning));
   // Write LaTeX document to file
-  writeFileSync(joinPath(outputDir, filename + '.tex'), latexDoc);
+  writeFileSync(joinPath(outputDir, filename + '.tex'), builder.document);
 
   logger.info('Compiling to PDF');
   const output = createWriteStream(joinPath(outputDir, filename + '.pdf'));

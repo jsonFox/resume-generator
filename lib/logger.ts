@@ -6,7 +6,8 @@ const loggerInstance = () => {
     level: 'info',
     levels: {
       ...winston.config.syslog.levels,
-      done: 1
+      done: 1,
+      warn: 2
     },
     format: winston.format.combine(
       winston.format.align(),
@@ -18,7 +19,6 @@ const loggerInstance = () => {
     ),
     transports: [
       new winston.transports.Console({
-        level: 'info',
         format: winston.format.combine(
           winston.format.colorize(),
           winston.format.simple()

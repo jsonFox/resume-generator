@@ -1,22 +1,19 @@
-import { ColorDefinition } from './colors';
-import { FontDefinition } from './fonts';
 import ResumeBuilder from './resume-builder';
-import {
-  FormatOptions,
-  IResumeEducationItem,
-  IResumeExperienceItem,
-  IResumeProjectItem,
-  IResumeSkillsItem
-} from './types';
+
+/** Character count where exceeding the limit is likely to
+ *  result in a multiline bullet point in the generated PDF
+ */
+const BULLET_LINE_CHARACTER_LIMIT = 100;
 
 export default class LatexBuilder {
   private resume: ResumeBuilder;
+  private multilineBulletWarning = false;
 
   constructor(resume: ResumeBuilder) {
     this.resume = resume;
   }
 
-  static formatMarkdownSyntax(text: string) {
+  formatMarkdownSyntax(text: string) {
     if (!text) return;
     return text
       .replace(/\*\*(.*?)\*\*/g, '\\textbf{$1}')
@@ -25,7 +22,7 @@ export default class LatexBuilder {
       .replace(/__(.*?)__/g, '\\underline{$1}');
   }
 
-  static formatReservedCharacters(text: string) {
+  formatReservedCharacters(text: string) {
     if (!text) return;
     return text
       .replaceAll('%', '\\%')
@@ -33,11 +30,11 @@ export default class LatexBuilder {
       .replaceAll('#', '\\#');
   }
 
-  static formatDateRange(start: string, end?: string) {
+  formatDateRange(start: string, end?: string) {
     return `${start}${start === end ? '' : ` -- ${end || 'Present'}`}`;
   }
 
-  static headerItem(item: string) {
+  headerItem(item: string) {
     item = this.formatReservedCharacters(item);
     if (!/\./.test(item)) return `\\small ${item}`;
     if (/@/.test(item)) return `\\href{mailto:${item}}{\\color{black}${item}}`;
@@ -50,9 +47,9 @@ export default class LatexBuilder {
     }}}`;
   }
 
-  static projectLink(url: string) {
+  projectLink(url: string) {
     if (!url) return;
-    url = LatexBuilder.formatReservedCharacters(url);
+    url = this.formatReservedCharacters(url);
     const label = /docs/i.test(url)
       ? 'Docs'
       : /github\.com/i.test(url)
@@ -61,10 +58,13 @@ export default class LatexBuilder {
     return `\\href{${url}}{\\underline{${label}}}`;
   }
 
-  static descriptionList(list: string[], joiner = '\n') {
+  descriptionList(list: string[], joiner = '\n') {
     const formatDescriptionItem = (text: string) => {
       if (!text) return;
       if (text.endsWith('.')) text = text.slice(0, -1);
+      if (text.length > BULLET_LINE_CHARACTER_LIMIT) {
+        this.multilineBulletWarning = true;
+      }
       text = this.formatReservedCharacters(text);
       text = this.formatMarkdownSyntax(text);
       return `\\resumeItem{${text}}`;
@@ -72,7 +72,7 @@ export default class LatexBuilder {
     return list.map(formatDescriptionItem).join(joiner);
   }
 
-  static organizationName(name: string, url?: string) {
+  organizationName(name: string, url?: string) {
     name = this.formatReservedCharacters(name);
     url &&= this.formatReservedCharacters(url);
     return `{${name}${!url ? '' : ` - \\href{${url}}{\\underline{Website}}`}}`;
@@ -80,10 +80,11 @@ export default class LatexBuilder {
 
   /**
    * Resume header section
-   * @param name - Name of the Resume owner
-   * @param items - Array of items to be displayed in the header
    */
-  static header(name: string, ...items: string[]) {
+  get header() {
+    const { name, address, phone, email, linkedin, github, portfolio } =
+      this.resume;
+    const items = [address, phone, email, linkedin, github, portfolio];
     const rows = [];
     for (let i = 0; i < items.length; i += 3) {
       const chunk = items.slice(i, i + 3);
@@ -100,31 +101,15 @@ export default class LatexBuilder {
 \\end{center}`;
   }
 
-  /** Instanced header section builder */
-  get header() {
-    const { name, address, phone, email, linkedin, github, portfolio } =
-      this.resume;
-    return LatexBuilder.header(
-      name,
-      address,
-      phone,
-      email,
-      linkedin,
-      github,
-      portfolio
-    );
-  }
-
   /**
    * Resume skills section
-   * @param items - Array of skill items
    */
-  static skills(items: IResumeSkillsItem[]) {
+  get skills() {
     return `%-----------TECHNICAL SKILLS-----------
 \\section{Skills}
   \\begin{itemize}[leftmargin=0.15in, label={}]
     \\small{\\item{
-      ${items
+      ${this.resume.skills
         .map(
           (s) =>
             `\\textbf{${s.category}}{: ${s.skills
@@ -136,76 +121,55 @@ export default class LatexBuilder {
   \\end{itemize}`;
   }
 
-  /** Instanced skills section builder */
-  get skills() {
-    return LatexBuilder.skills(this.resume.skills);
-  }
-
   /**
    * Resume experience section
-   * @param items - Array of experience items
    */
-  static experience(items: IResumeExperienceItem[]) {
+  get experience() {
     return `%-----------EXPERIENCE-----------
 \\section{Experience}
   \\resumeSubHeadingListStart
-    ${items
+    ${this.resume.experience
       .map(
         (x) => `\\resumeSubheading
-      {${x.position}}{${LatexBuilder.formatDateRange(x.startDate, x.endDate)}}
-      ${LatexBuilder.organizationName(x.organization)}{${x.location}}
+      {${x.position}}{${this.formatDateRange(x.startDate, x.endDate)}}
+      ${this.organizationName(x.organization)}{${x.location}}
     \\resumeItemListStart
-      ${LatexBuilder.descriptionList(x.description, '\n\t\t\t')}
+      ${this.descriptionList(x.description, '\n\t\t\t')}
     \\resumeItemListEnd`
       )
       .join('\n\t\t')}
   \\resumeSubHeadingListEnd`;
   }
 
-  /** Instanced experience section builder */
-  get experience() {
-    return LatexBuilder.experience(this.resume.experience);
-  }
-
   /**
    * Resume education section
-   * @param items - Array of education items
    */
-  static education(items: IResumeEducationItem[]) {
+  get education() {
     return `%-----------EDUCATION-----------
 \\section{Education}
   \\resumeSubHeadingListStart
-    ${items
+    ${this.resume.education
       .map(
         (e) => `\\resumeSubheading
-      {${e.institution}}{${LatexBuilder.formatDateRange(
-          e.startDate,
-          e.endDate
-        )}}
+      {${e.institution}}{${this.formatDateRange(e.startDate, e.endDate)}}
       {${e.degree}}{${e.location}}`
       )
       .join('\n\t\t')}
   \\resumeSubHeadingListEnd`;
   }
 
-  /** Instanced education section builder */
-  get education() {
-    return LatexBuilder.education(this.resume.education);
-  }
-
   /**
    * Resume projects section
-   * @param items - Array of project items
    */
-  static projects(items: IResumeProjectItem[]) {
+  get projects() {
     return `%-----------PROJECTS-----------
 \\section{Projects}
   \\resumeSubHeadingListStart
-    ${items
+    ${this.resume.projects
       .map(
         (p) => `\\resumeProjectHeading
       {\\textbf{${p.title}} ~ \\emph{${p.stack.join(', ')}}}{${p.links
-          .map(LatexBuilder.projectLink)
+          .map(link => this.projectLink(link))
           .join(' ~ ')}}
     ${p.description}\\vspace{-4pt}`
       )
@@ -213,13 +177,9 @@ export default class LatexBuilder {
   \\resumeSubHeadingListEnd`;
   }
 
-  /** Instanced projects section builder */
-  get projects() {
-    return LatexBuilder.projects(this.resume.projects);
-  }
-
   /** Used at the start of the latex document */
-  static begin({ font, textColor, dividerColor }: FormatOptions) {
+  get begin() {
+    const { font, textColor, dividerColor } = this.resume.options;
     return `%-------------------------
 % Template based off of: https://github.com/sb2nov/resume
 %------------------------
@@ -329,19 +289,11 @@ ${
 \\begin{document}`;
   }
 
-  get begin() {
-    return LatexBuilder.begin(this.resume.options);
-  }
-
   /** Used at the end of the latex document */
-  static end() {
+  get end() {
     return `%-------------------------------------------
 \\end{document}
 `;
-  }
-
-  get end() {
-    return LatexBuilder.end();
   }
 
   get document() {
@@ -356,5 +308,16 @@ ${
       }),
       this.end
     ].join('\n\n');
+  }
+
+  get warnings() {
+    const warningList = [];
+    if (this.multilineBulletWarning) {
+      warningList.push(
+        `Format Warning: Found description items containing > ${BULLET_LINE_CHARACTER_LIMIT} characters
+        Multiline bullet points may be incorrectly parsed by ATS as separate items`
+      );
+    }
+    return warningList;
   }
 }
