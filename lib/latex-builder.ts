@@ -95,7 +95,7 @@ export default class LatexBuilder {
     }
     return `%----------HEADER----------
 \\begin{center}
-  \\textbf{\\Huge \\scshape ${name}} \\\\ \\vspace{8pt}
+  \\textbf{\\Huge ${name}} \\\\ \\vspace{8pt}
   ${rows.join(' \\\\ \n\\vspace{2pt}')}
 \\end{center}`;
   }
